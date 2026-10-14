@@ -41,6 +41,14 @@ second system to replace. This proposal generalizes the calculation so one
 configured result can be reused by rate limiting, metering, observability, and
 future spend-budget filters.
 
+Existing `token_rate_limit` configuration maps to the shared calculation
+without changing its result. Each token type starts at weight `1.0`,
+filter-wide `default_weights` overlay those values, and the matched rule's
+`weights` overlay the filter defaults. An omitted per-rule weight therefore
+inherits the filter default, and an omitted filter default inherits `1.0`.
+Reconciliation must retain the current partitioning, fallback, saturation, and
+rounding behavior while it moves to the shared result.
+
 The selected calculation may vary by the trusted request and routing context,
 including route, backend, provider, and effective model. Operators can define a
 global fallback and narrower overrides. Selection must be deterministic when
